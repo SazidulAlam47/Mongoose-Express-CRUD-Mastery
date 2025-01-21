@@ -15,10 +15,9 @@ export interface TOrder {
     quantity: number;
 }
 
-export interface TUser {
+export interface TUserWithoutPass {
     userId: number;
     username: string;
-    password: string;
     fullName: TFullName;
     age: number;
     email: string;
@@ -26,4 +25,8 @@ export interface TUser {
     hobbies: string[];
     address: TAddress;
     orders?: TOrder[];
+}
+
+export interface TUser extends TUserWithoutPass {
+    password: string;
 }

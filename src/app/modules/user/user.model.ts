@@ -1,5 +1,7 @@
 import { model, Schema } from "mongoose";
+import bcrypt from "bcrypt";
 import { TAddress, TFullName, TOrder, TUser } from "./user.interface";
+import config from "../../config";
 
 const fullNameSchema = new Schema<TFullName>({
     firstName: { type: String, required: true },
@@ -29,6 +31,19 @@ const userSchema = new Schema<TUser>({
     hobbies: { type: [String], required: true },
     address: { type: addressSchema, required: true },
     orders: { type: [orderSchema] },
+});
+
+userSchema.pre("save", async function (next) {
+    this.password = await bcrypt.hash(
+        this.password,
+        Number(config.bcrypt_salt_round),
+    );
+    next();
+});
+
+userSchema.post("save", function (doc, next) {
+    doc.password = "";
+    next();
 });
 
 export const User = model<TUser>("User", userSchema);
