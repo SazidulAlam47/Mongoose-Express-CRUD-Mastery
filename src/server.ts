@@ -1,5 +1,6 @@
+/* eslint-disable no-console */
 import app from "./app";
-import config from "./config";
+import config from "./app/config";
 import mongoose from "mongoose";
 
 async function main() {
@@ -8,7 +9,7 @@ async function main() {
 
         app.listen(config.port, () => {
             console.log(
-                `Assignment-2 Project is listening on port ${config.port}`
+                `Assignment-2 Project is listening on port ${config.port}`,
             );
         });
     } catch (error) {
