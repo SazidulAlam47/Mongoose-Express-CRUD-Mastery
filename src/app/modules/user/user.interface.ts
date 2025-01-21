@@ -1,3 +1,5 @@
+import { Model } from "mongoose";
+
 export interface TFullName {
     firstName: string;
     lastName: string;
@@ -15,9 +17,10 @@ export interface TOrder {
     quantity: number;
 }
 
-export interface TUserWithoutPass {
+export interface TUser {
     userId: number;
     username: string;
+    password: string;
     fullName: TFullName;
     age: number;
     email: string;
@@ -27,6 +30,7 @@ export interface TUserWithoutPass {
     orders?: TOrder[];
 }
 
-export interface TUser extends TUserWithoutPass {
-    password: string;
+export interface TUserModel extends Model<TUser> {
+    // eslint-disable-next-line no-unused-vars
+    isUserExists(userId: number): Promise<TUser | null>;
 }

@@ -19,7 +19,17 @@ const getAllUsersFromDB = async () => {
     return result;
 };
 
+const getUserById = async (userId: number) => {
+    const userExists = await User.isUserExists(userId);
+    if (!userExists) {
+        throw new Error("User not found!");
+    }
+    const result = await User.findOne({ userId }, { password: 0 });
+    return result;
+};
+
 export const userServices = {
     createUserInDB,
     getAllUsersFromDB,
+    getUserById,
 };
