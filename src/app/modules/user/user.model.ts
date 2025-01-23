@@ -37,6 +37,7 @@ const userSchema = new Schema<TUser, TUserModel>({
     hobbies: { type: [String], required: true },
     address: { type: addressSchema, required: true },
     orders: { type: [orderSchema] },
+    isDeleted: { type: Boolean, default: false },
 });
 
 userSchema.pre("save", async function (next) {
@@ -49,6 +50,16 @@ userSchema.pre("save", async function (next) {
 
 userSchema.post("save", function (doc, next) {
     doc.password = "";
+    next();
+});
+
+userSchema.pre("find", async function (next) {
+    this.find({ isDeleted: { $ne: true } });
+    next();
+});
+
+userSchema.pre("findOne", async function (next) {
+    this.find({ isDeleted: { $ne: true } });
     next();
 });
 

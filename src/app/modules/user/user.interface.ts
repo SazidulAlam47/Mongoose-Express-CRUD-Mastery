@@ -28,6 +28,7 @@ export interface TUser {
     hobbies: string[];
     address: TAddress;
     orders?: TOrder[];
+    isDeleted: boolean;
 }
 
 export interface TUserModel extends Model<TUser> {
