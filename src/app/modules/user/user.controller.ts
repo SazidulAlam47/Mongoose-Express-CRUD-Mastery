@@ -161,7 +161,32 @@ const getOrdersOfUser = async (req: Request, res: Response) => {
         );
         res.status(200).json({
             success: true,
-            message: `Order fetched successfully`,
+            message: "Order fetched successfully",
+            data: result,
+        });
+    } catch (error) {
+        res.status(404).json({
+            success: false,
+            message: "User not found",
+            error: {
+                code: 404,
+                description: "User not found!",
+            },
+        });
+        // eslint-disable-next-line no-console
+        console.log(error);
+    }
+};
+
+const getTotalPriceOfOrders = async (req: Request, res: Response) => {
+    try {
+        const { userId } = req.params;
+        const result = await userServices.getTotalPriceOfOrdersFromDB(
+            Number(userId),
+        );
+        res.status(200).json({
+            success: true,
+            message: "Total price calculated successfully!",
             data: result,
         });
     } catch (error) {
@@ -186,4 +211,5 @@ export const userControllers = {
     deleteUser,
     addProductToUser,
     getOrdersOfUser,
+    getTotalPriceOfOrders,
 };
