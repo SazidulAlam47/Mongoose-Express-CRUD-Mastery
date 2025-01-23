@@ -90,16 +90,19 @@ const getTotalPriceOfOrdersFromDB = async (userId: number) => {
             $project: {
                 _id: 0,
                 totalOrderPrice: {
-                    $sum: {
-                        $map: {
-                            input: "$orders",
-                            as: "order",
-                            in: {
-                                $multiply: [
-                                    "$$order.price",
-                                    "$$order.quantity",
-                                ],
-                            },
+                    $reduce: {
+                        input: "$orders",
+                        initialValue: 0,
+                        in: {
+                            $add: [
+                                "$$value",
+                                {
+                                    $multiply: [
+                                        "$$this.price",
+                                        "$$this.quantity",
+                                    ],
+                                },
+                            ],
                         },
                     },
                 },
