@@ -153,6 +153,31 @@ const addProductToUser = async (req: Request, res: Response) => {
     }
 };
 
+const getOrdersOfUser = async (req: Request, res: Response) => {
+    try {
+        const { userId } = req.params;
+        const result = await userServices.getAllOrdersOfUserFromDB(
+            Number(userId),
+        );
+        res.status(200).json({
+            success: true,
+            message: `Order fetched successfully`,
+            data: result,
+        });
+    } catch (error) {
+        res.status(404).json({
+            success: false,
+            message: "User not found",
+            error: {
+                code: 404,
+                description: "User not found!",
+            },
+        });
+        // eslint-disable-next-line no-console
+        console.log(error);
+    }
+};
+
 export const userControllers = {
     createUser,
     getAllUsers,
@@ -160,4 +185,5 @@ export const userControllers = {
     updateUser,
     deleteUser,
     addProductToUser,
+    getOrdersOfUser,
 };
