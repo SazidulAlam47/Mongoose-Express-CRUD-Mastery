@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import { TUser } from "./user.interface";
+import { TOrder, TUser } from "./user.interface";
 import { User } from "./user.model";
 import config from "../../config";
 
@@ -52,10 +52,27 @@ const deleteTrueInDB = async (userId: number) => {
     return result;
 };
 
+const addProductToUserInDB = async (userId: number, order: TOrder) => {
+    const userExists = await User.isUserExists(userId);
+    if (!userExists) {
+        throw new Error("User Not Found");
+    }
+    const result = await User.updateOne(
+        { userId },
+        {
+            $push: {
+                orders: order,
+            },
+        },
+    );
+    return result;
+};
+
 export const userServices = {
     createUserInDB,
     getAllUsersFromDB,
     getUserByIdFromDB,
     updateUserInDB,
     deleteTrueInDB,
+    addProductToUserInDB,
 };
