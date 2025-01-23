@@ -44,14 +44,14 @@ const getAllUsers = async (req: Request, res: Response) => {
 const getUserById = async (req: Request, res: Response) => {
     try {
         const { userId } = req.params;
-        const result = await userServices.getUserById(Number(userId));
+        const result = await userServices.getUserByIdFromDB(Number(userId));
 
         res.status(200).json({
             success: true,
             message: `userId:${userId} fetched successfully`,
             data: result,
         });
-    } catch (err) {
+    } catch (error) {
         res.status(404).json({
             success: false,
             message: "User not found",
@@ -61,7 +61,38 @@ const getUserById = async (req: Request, res: Response) => {
             },
         });
         // eslint-disable-next-line no-console
-        console.log(err);
+        console.log(error);
+    }
+};
+
+const updateUser = async (req: Request, res: Response) => {
+    try {
+        const { userId } = req.params;
+        const { body } = req;
+        const zodParsedData = userValidationSchema.parse(body);
+        const result = await userServices.updateUserInDB(
+            Number(userId),
+            zodParsedData,
+        );
+        if (result) {
+            result.password = "";
+        }
+        res.status(200).json({
+            success: true,
+            message: `userId:${userId} updated successfully`,
+            data: result,
+        });
+    } catch (error) {
+        res.status(404).json({
+            success: false,
+            message: "User not found",
+            error: {
+                code: 404,
+                description: "User not found!",
+            },
+        });
+        // eslint-disable-next-line no-console
+        console.log(error);
     }
 };
 
@@ -69,4 +100,5 @@ export const userControllers = {
     createUser,
     getAllUsers,
     getUserById,
+    updateUser,
 };

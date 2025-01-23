@@ -1,5 +1,7 @@
+import bcrypt from "bcrypt";
 import { TUser } from "./user.interface";
 import { User } from "./user.model";
+import config from "../../config";
 
 const createUserInDB = async (user: TUser) => {
     const result = await User.create(user);
@@ -19,7 +21,7 @@ const getAllUsersFromDB = async () => {
     return result;
 };
 
-const getUserById = async (userId: number) => {
+const getUserByIdFromDB = async (userId: number) => {
     const userExists = await User.isUserExists(userId);
     if (!userExists) {
         throw new Error("User not found!");
@@ -28,8 +30,22 @@ const getUserById = async (userId: number) => {
     return result;
 };
 
+const updateUserInDB = async (userId: number, user: TUser) => {
+    const userExists = await User.isUserExists(userId);
+    if (!userExists) {
+        throw new Error("User Not Found");
+    }
+    user.password = await bcrypt.hash(
+        user.password,
+        Number(config.bcrypt_salt_round),
+    );
+    const result = await User.findOneAndUpdate({ userId }, user);
+    return result;
+};
+
 export const userServices = {
     createUserInDB,
     getAllUsersFromDB,
-    getUserById,
+    getUserByIdFromDB,
+    updateUserInDB,
 };
